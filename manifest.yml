@@ -1,0 +1,17 @@
+---
+language: apt
+default_versions: []
+dependency_deprecation_dates: []
+dependencies: []
+pre_package: scripts/build.sh
+include_files:
+- LICENSE
+- README.md
+- VERSION
+- bin/supply
+- manifest.yml
+# - CHANGELOG
+# - CONTRIBUTING.md
+# - ISSUE_TEMPLATE
+# - NOTICE
+# - PULL_REQUEST_TEMPLATE

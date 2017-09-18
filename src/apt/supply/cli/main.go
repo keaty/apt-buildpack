@@ -1,8 +1,10 @@
 package main
 
 import (
+	"apt/apt"
 	"apt/supply"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/cloudfoundry/libbuildpack"
@@ -33,7 +35,10 @@ func main() {
 		os.Exit(13)
 	}
 
-	supplier := supply.New(stager, manifest, logger)
+	command := &libbuildpack.Command{}
+	a := apt.New(command, stager.BuildDir(), stager.CacheDir(), filepath.Join(stager.DepDir(), "apt"))
+
+	supplier := supply.New(stager, a, logger)
 
 	if err := supplier.Run(); err != nil {
 		os.Exit(14)

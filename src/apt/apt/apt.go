@@ -17,24 +17,21 @@ type Apt struct {
 	options    []string
 	aptFile    string
 	cacheDir   string
-	stateDir   string
 	installDir string
 }
 
 func New(command Command, aptFile, cacheDir, installDir string) *Apt {
-	s := &Apt{
-		command:    command,
-		aptFile:    aptFile,
-		cacheDir:   filepath.Join(cacheDir, "apt", "cache"),
-		stateDir:   filepath.Join(cacheDir, "apt", "state"),
+	return &Apt{
+		command:  command,
+		aptFile:  aptFile,
+		cacheDir: filepath.Join(cacheDir, "apt", "cache"),
+		options: []string{
+			"-o", "debug::nolocking=true",
+			"-o", "dir::cache=" + filepath.Join(cacheDir, "apt", "cache"),
+			"-o", "dir::state=" + filepath.Join(cacheDir, "apt", "state"),
+		},
 		installDir: installDir,
 	}
-	s.options = []string{
-		"-o", "debug::nolocking=true",
-		"-o", "dir::cache=" + s.cacheDir,
-		"-o", "dir::state=" + s.stateDir,
-	}
-	return s
 }
 
 func (a *Apt) Update() (string, error) {
@@ -75,7 +72,7 @@ func (a *Apt) Install() (string, error) {
 	}
 
 	for _, file := range files {
-		if output, err := a.command.Output("/", "dpkg", "-x", file, filepath.Join(a.installDir, "apt")); err != nil {
+		if output, err := a.command.Output("/", "dpkg", "-x", file, a.installDir); err != nil {
 			return output, err
 		}
 	}
